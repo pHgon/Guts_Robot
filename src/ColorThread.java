@@ -5,35 +5,37 @@ import lejos.robotics.*;
 public class ColorThread extends Thread{
 	
 	private int count;
-	private boolean flag;
+	private boolean running;
+	private boolean isWhite;
 	
 	public ColorThread(){
 		this.count = 0;
-		this.flag = false;
+		this.running = true;
+		this.isWhite = false;
 	}
 	
 	public int colorCounter(){
-		this.flag = true;
-		
 		return this.count;
 	}
 	
+	public void stopThread() {
+		this.running = false;
+	}
+	
 	public void run(){
-		boolean isWhite = false;
 		ColorSensor color = new ColorSensor(SensorPort.S2);
-		this.count = 0;
 		
-		while(!this.flag){
+		while(running){
 			if(color.getColorID() == 6) {
-				if(!isWhite) {
-					isWhite = true;
+				if(!this.isWhite) {
+					this.isWhite = true;
 					this.count++;
 				}
 			}
 			
 			if(color.getColorID() == 7) {
-				if(isWhite)
-					isWhite = false;
+				if(this.isWhite)
+					this.isWhite = false;
 			}
 		}
 	}
